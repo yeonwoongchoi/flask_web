@@ -1,16 +1,10 @@
 from flask import Flask , render_template, flash, redirect, url_for, session, request, logging
-from flask_mysqldb import MySQL
+
 import pymysql
 from data import Articles
 
 app = Flask(__name__)
 app.debug=True
-
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = '1234'
-app.config['MYSQL_DB'] = 'myflaskapp'
-app.config['MYSQL__CURSORCLASS'] = 'DictCursor'
 
 db = pymysql.connect(host='localhost', 
                         port=3306, 
@@ -18,21 +12,20 @@ db = pymysql.connect(host='localhost',
                         passwd='1234', 
                         db='myflaskapp')
 
-cursor = db.cursor()
-sql_1 = 'SELECT * FROM users;'
-# sql_2 = '''
-#         INSERT INTO users(name, email, userame, password) 
-#         VALUES ('LEE , '3@naver.com','LEE','1234');
-#         '''
-# result = cursor.execute(sql_2)
-# db.commit()
-# db.close()
-# # print(result)
+# sql_1 = 'SELECT * FROM users;'
+# # sql_2 = '''
+# #         INSERT INTO users(name, email, userame, password) 
+# #         VALUES ('LEE , '3@naver.com','LEE','1234');
+# #         '''
+# # result = cursor.execute(sql_2)
+# # db.commit()
+# # db.close()
+# # # print(result)
+# # users = cursor.fetchall()
+# # print(users[0][1])
+# cursor.execute(sql_1)
 # users = cursor.fetchall()
-# print(users[0][1])
-cursor.execute(sql_1)
-users = cursor.fetchall
-print(users)
+# print(users)
 #init mysql
 # mysql = MySQL(app)
 
@@ -58,6 +51,68 @@ def about():
     # return "TEST"
     return render_template('about.html', hello = "GaryKim")
 
+
+# # 회원가입
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        # data = request.body.get('author')
+        name = request.form.get('name')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        re_password = request.form.get('re_password')
+        username = request.form.get('username')
+        # name = form.name.data
+        if(password == re_password):
+            print([name, email , password , re_password , username])
+            cursor = db.cursor()
+            sql = '''
+                INSERT INTO users (name , email , username , password) 
+                VALUES (%s ,%s,%s,%s )
+             '''
+            cursor.execute(sql , (name,email,username,password ))
+            db.commit()
+            db.close()
+            # cursor = db.cursor()
+            # cursor.execute('SELECT * FROM users;')
+            # users = cursor.fetchall()
+            return "register Success"
+        else:
+            return "Invalid Password"
+    else:
+        return "GET Success"
+
+
+# # 회원가입
+# @app.route('/register', methods=['GET', 'POST'])
+# def register():
+#     if request.method == 'POST':
+
+#         # data = request.body.get('author')
+#         name = request.form.get('name')
+#         email = request.form.get('email')
+#         username = request.form.get('username')
+#         password = request.form.get('password')
+#         re_password = request.form.get('re_password')
+#         if(password is not re_password):
+#             return 'Invalid password'
+#         else:
+#         # name = form.name.data
+#             print([name, email, username, password,re_password])
+#             return "POST success"
+#     else:
+#         return "GET success"
+
+
+
+
+
+
+
+
+
+
+
 @app.route('/articles')       #methods = ['GET','POST'])로 추가 가능
 def articles():
     print("Success")
@@ -80,6 +135,3 @@ def article(id):
 if __name__ =='__main__':
     # app.run(host = '0.0.0.0', port='8080')
     app.run()
-
-
-    

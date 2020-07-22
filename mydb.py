@@ -40,23 +40,40 @@ users = cursor.fetchall()
 print(users)
 
 
-name = 'GANGNAM'
-email = '6@naver.com'
-username = 'GANG'
-password = '1234'
-name, email, username, password
-sql_4=  '''
-        INSERT INTO users(name, email , username, password) 
-        VALUES (%s ,%s, %s, %s);
-		'''
+# name = 'GANGNAM'
+# email = '6@naver.com'
+# username = 'GANG'
+# password = '1234'
+# name, email, username, password
+# sql_4=  '''
+#         INSERT INTO users(name, email , username, password) 
+#         VALUES (%s ,%s, %s, %s);
+# 		'''
 # cursor.execute(sql_4, (name, email , username, password))
 # db.commit()
 # db.close()
-sql_1 = 'DELETE FROM `myflaskapp`.`users` WHERE  `id`=1;'
-cursor.execute(sql_1)
-db.commit()
-db.close()
+title = 'javascript'
+body = '프로토타입기반의 객체지향 프로그래밍'
+author = 'Gary'
+sql_7=  '''
+        INSERT INTO topic(title, body , author) 
+        VALUES (%s ,%s, %s);
+		'''
+# cursor.execute(sql_7 ,(title, body , author))
+# db.commit()
+# db.close()
+# sql_1 = 'DELETE FROM `myflaskapp`.`users` WHERE  `id`=1;'
+# cursor.execute(sql_1)
+# db.commit()
+# db.close()
 
-sql_6='UPDATE `users` SET `name` ="PARK" WHERE `id` = 6;'
-db.commit()
-db.close()
+# sql_6='UPDATE `users` SET `name` ="PARK" WHERE `id` = 6;'
+# db.commit()
+# db.close()
+
+
+# 이건 조회해볼때
+sql_7 = 'SELECT * FROM topic;'
+cursor.execute(sql_7)
+topics = cursor.fetchall()
+print(topics)

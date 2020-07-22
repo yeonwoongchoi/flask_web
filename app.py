@@ -12,6 +12,7 @@ db = pymysql.connect(host='localhost',
                         passwd='1234', 
                         db='myflaskapp')
 
+cursor = db.cursor()
 # sql_1 = 'SELECT * FROM users;'
 # # sql_2 = '''
 # #         INSERT INTO users(name, email, userame, password) 
@@ -65,22 +66,23 @@ def register():
         # name = form.name.data
         if(password == re_password):
             print([name, email , password , re_password , username])
-            cursor = db.cursor()
+            
             sql = '''
                 INSERT INTO users (name , email , username , password) 
                 VALUES (%s ,%s,%s,%s )
              '''
             cursor.execute(sql , (name,email,username,password ))
             db.commit()
-            db.close()
+            
             # cursor = db.cursor()
             # cursor.execute('SELECT * FROM users;')
             # users = cursor.fetchall()
             return "register Success"
         else:
             return "Invalid Password"
+        db.close()
     else:
-        return "GET Success"
+        return render_template('register.html')
 
 
 # # 회원가입

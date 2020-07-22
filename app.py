@@ -2,6 +2,8 @@ from flask import Flask , render_template, flash, redirect, url_for, session, re
 
 import pymysql
 from data import Articles
+from passlib.hash import pbkdf2_sha256
+
 
 app = Flask(__name__)
 app.debug=True
@@ -12,7 +14,7 @@ db = pymysql.connect(host='localhost',
                         passwd='1234', 
                         db='myflaskapp')
 
-cursor = db.cursor()
+
 # sql_1 = 'SELECT * FROM users;'
 # # sql_2 = '''
 # #         INSERT INTO users(name, email, userame, password) 
@@ -38,7 +40,12 @@ cursor = db.cursor()
 # print(result)
 
 
-
+@app.route('/login' , methods=['GET' , 'POST'])
+def log_in():
+    if request.method == 'POST':
+        return "LOGED PAGE"
+    else:
+        return "LOGIN PAGE"
 
 @app.route('/')
 def index():
@@ -53,20 +60,20 @@ def about():
     return render_template('about.html', hello = "GaryKim")
 
 
-# # 회원가입
+######################## 회원가입 ###############################
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         # data = request.body.get('author')
         name = request.form.get('name')
         email = request.form.get('email')
-        password = request.form.get('password')
+        password = pbkdf2_sha256.hash(request.form.get('password'))
         re_password = request.form.get('re_password')
         username = request.form.get('username')
         # name = form.name.data
-        if(password == re_password):
-            print([name, email , password , re_password , username])
-            
+        if(pbkdf2_sha256.verify(re_password,password)):
+            print(pbkdf2_sha256.verify(re_password,password))
+            cursor = db.cursor()
             sql = '''
                 INSERT INTO users (name , email , username , password) 
                 VALUES (%s ,%s,%s,%s )

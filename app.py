@@ -40,12 +40,7 @@ db = pymysql.connect(host='localhost',
 # print(result)
 
 
-@app.route('/login' , methods=['GET' , 'POST'])
-def log_in():
-    if request.method == 'POST':
-        return "LOGED PAGE"
-    else:
-        return "LOGIN PAGE"
+
 
 @app.route('/')
 def index():
@@ -112,14 +107,30 @@ def register():
 #     else:
 #         return "GET success"
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        id = request.form.get('email')
+        pw = request.form.get('password')
+        print([id, pw])
 
+        sql='SELECT * FROM users WHERE email = %s'
+        cursor = db.cursor()
+        cursor.execute(sql, [id])
+        users = cursor.fetchone()
+        # print(users[4])
 
+        if users == None:
+            return redirect(url_for('login'))
+        else:
+            if pbkdf2_sha256.verify(pw,users[4]):
+                return redirect(url_for('articles'))
+            else:
+                return redirect(url_for('login'))
 
-
-
-
-
-
+    else:
+        return render_template('login.html')
+    
 
 
 @app.route('/articles')       #methods = ['GET','POST'])로 추가 가능

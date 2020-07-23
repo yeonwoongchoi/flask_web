@@ -39,9 +39,6 @@ db = pymysql.connect(host='localhost',
 
 # print(result)
 
-
-
-
 @app.route('/')
 def index():
     print("Success")
@@ -54,6 +51,29 @@ def about():
     # return "TEST"
     return render_template('about.html', hello = "GaryKim")
 
+
+
+@app.route('/add_articles', methods =['GET','POST'])
+def add_articles():
+    if request.method =='POST':
+        # print(request.form['title'])
+        title = request.form['title']
+        body = request.form['body']
+        author = request.form['author']
+        cursor = db.cursor()
+        sql = '''
+            INSERT INTO topic(title, body, author)
+            VALUES (%s,%s, %s)
+        
+        '''
+        cursor.execute(sql , (title, body, author))
+        db.commit()
+        
+        return redirect("/articles")
+    else:
+        
+        return render_template('add_articles.html')
+    db.close()
 
 ######################## 회원가입 ###############################
 @app.route('/register', methods=['GET', 'POST'])
@@ -79,7 +99,8 @@ def register():
             # cursor = db.cursor()
             # cursor.execute('SELECT * FROM users;')
             # users = cursor.fetchall()
-            return "register Success"
+
+            return redirect(url_for('login'))
         else:
             return "Invalid Password"
         db.close()
@@ -135,21 +156,28 @@ def login():
 
 @app.route('/articles')       #methods = ['GET','POST'])로 추가 가능
 def articles():
-    print("Success")
-    # return "TEST"
-    articles = Articles()
-    print(articles)
-    return render_template('articles.html', articles = articles)
 
-@app.route('/test')
-def show_image():
-    return render_template('image.html')
+    # return "TEST"
+    # articles = Articles()
+    # print(articles)
+    cursor = db.cursor()
+    sql = 'SELECT * FROM topic;'
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    print(data)
+    return render_template('articles.html', articles = data)
+    # return "GET SUCCESS"
+
+
+
+
+#################################파람스#########################################
 
 @app.route('/article/<int:id>')
 def article(id):
     print(id)
-    articles = Articles()[id-1]
-    print(articles)
+    # articles = Articles()[id-1]
+    # print(articles)
     return render_template('article.html',data = articles) 
     # return "Success"
 if __name__ =='__main__':

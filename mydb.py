@@ -67,9 +67,17 @@ sql_7=  '''
 # db.commit()
 # db.close()
 
-# sql_6='UPDATE `users` SET `name` ="PARK" WHERE `id` = 6;'
-# db.commit()
-# db.close()
+
+
+
+
+# 업데이트 할때
+sql_6='UPDATE `users` SET `name` ="PARK" WHERE `id` = 6;'
+db.commit()
+db.close()
+
+
+
 
 
 # 이건 조회해볼때
